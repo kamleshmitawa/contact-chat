@@ -5,7 +5,7 @@ import reportWebVitals from "./reportWebVitals";
 import { Provider } from "react-redux";
 import store from "./store";
 import "./index.css";
-
+import "bootstrap-icons/font/bootstrap-icons.css";
 ReactDOM.render(
   <React.StrictMode>
     <Provider store={store}>

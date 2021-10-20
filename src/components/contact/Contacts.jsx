@@ -4,7 +4,8 @@ import { getContact } from "../../store/actions/contact";
 import { AddContact } from "./AddContact";
 import { ContactList } from "./ContactList";
 
-import './contact.css';
+import "./contact.css";
+import { Chat } from "../message/Chat";
 
 export const Contact = () => {
   const [contactList, setContactList] = useState([]);
@@ -12,7 +13,7 @@ export const Contact = () => {
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(false);
   const [isAddContact, setIsAddContact] = useState(false);
-
+  const [isChat, setisChat] = useState(false);
 
   const { contacts, contactLoading, contactErr } = useSelector((state) => ({
     contacts: state.contect.contacts,
@@ -37,16 +38,21 @@ export const Contact = () => {
   };
 
   const onAddContactHandler = () => {};
+  const onContactItemHandler = (e, item) => {
+    setisChat(true);
 
-  let filteredContact =
+  };
+
+  let filteredContact = search?.length ?
     contactList?.filter((conct) =>
-      conct.name.toLowerCase().includes(search.toLowerCase())
-    ) || [];
+      conct?.firstName?.toLowerCase().includes(search?.toLowerCase())
+    ) : contactList;
 
   const listProps = {
     list: filteredContact,
+    onContactItemHandler,
   };
-  console.log(contactList, "contactList", filteredContact);
+  console.log(contactList, "contactList", filteredContact, 'search',search);
 
   if (loading) {
     return <div>Loading......</div>;
@@ -55,29 +61,27 @@ export const Contact = () => {
     <div className="container">
       {error ? <div className="error-msg">{error} </div> : <React.Fragment />}
       <div className="row">
-        <div className="col-3">
-          <div className="row">
-            <div>
-              <input
-                type="text"
-                name="search"
-                placeholder="search contact"
-                autoComplete="off"
-                value={search}
-                onChange={onChangeHandler}
-              />
-            </div>
-            <div>
-              <button type="button" onClick={()=> setIsAddContact(!isAddContact)}>
-                Add Contact
-              </button>
-            </div>
+        <div className="col-3 search-sec">
+          <div className="row search-box">
+            <input
+              type="text"
+              name="search"
+              placeholder="search contact"
+              autoComplete="off"
+              value={search}
+              onChange={onChangeHandler}
+            />
+            <button
+              type="button"
+              onClick={() => setIsAddContact(!isAddContact)}
+            >
+              +
+            </button>
           </div>
           <ContactList {...listProps} />
         </div>
-        <div className="col-9">
-          {isAddContact && <AddContact />}
-        </div>
+        <div className="col-9 chat-sec">{isAddContact && <AddContact />}</div>
+        <div className="col-9 chat-sec">{isChat && <Chat />}</div>
       </div>
     </div>
   );

@@ -5,6 +5,7 @@ import firebaseDB from "../../firebase";
 // import firebase from 'firebase/app';
 import "firebase/firestore";
 import "firebase/auth";
+import { collection, onSnapshot } from "@firebase/firestore";
 
 import { useAuthState } from "react-firebase-hooks/auth";
 import { useCollectionData } from "react-firebase-hooks/firestore";
@@ -36,7 +37,9 @@ export const Chat = () => {
   };
 
   // getting the message and sorting them by time of creation
-  const messagesRef = firebaseDB.collection("messages");
+  const messagesRef =  onSnapshot(collection(firebaseDB, "messages"))
+
+  // const messagesRef = firebaseDB.collection("messages");
   const query = messagesRef.orderBy("createdAt", "asc").limitToLast(25);
 
   const [messages] = useCollectionData(query, { idField: "id" });
@@ -52,7 +55,7 @@ export const Chat = () => {
       </div>
 
       {/* Form to type and submit messages */}
-      <form onSubmit={sendMessage}>
+      <form onSubmit={()=>sendMessage()}>
         <input
           value={formValue}
           onChange={(e) => setFormValue(e.target.value)}

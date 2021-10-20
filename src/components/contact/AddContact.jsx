@@ -5,6 +5,7 @@ import { checkAddContactValidation } from "../../utils";
 
 export const AddContact = () => {
   const [addPayload, setAddPayload] = useState({
+    profileImg: "",
     firstName: "",
     lastName: "",
     email: "",
@@ -20,7 +21,7 @@ export const AddContact = () => {
 
   const onClearHandler = (e) => {
     e.preventDefault();
-    setAddPayload({ firstName: "", lastName: "", email: "", phoneNumber: "" });
+    setAddPayload({ profileImg: "",firstName: "", lastName: "", email: "", phoneNumber: "" });
     setValidObj({})
   };
 
@@ -33,7 +34,7 @@ export const AddContact = () => {
     }
   };
 
-  const { firstName, lastName, email, phoneNumber } = addPayload;
+  const { profileImg, firstName, lastName, email, phoneNumber } = addPayload;
   console.log(
     addPayload,
     "addPayloadaddPayload",
@@ -43,8 +44,18 @@ export const AddContact = () => {
   );
 
   return (
-    <div class="container">
+    <div className="add-container">
       <form>
+      <label for="profile">Profile</label>
+      <input
+          type="file"
+          id="profile"
+          name="profileImg"
+          value={profileImg}
+          onChange={onChangeHandler}
+          placeholder="profile.."
+        />
+        <br/>
         <label for="fname">First Name*</label>
         <input
           type="text"
@@ -66,7 +77,7 @@ export const AddContact = () => {
         />
 
         <label for="email">
-          <i class="fa fa-envelope"></i> Email
+          <i className="fa fa-envelope"></i> Email
         </label>
         <input
           type="text"
@@ -79,7 +90,7 @@ export const AddContact = () => {
         <div className="error-msg">{validObj["email"]}</div>
 
         <label for="phoneNumber">
-          <i class="fa fa-phone"></i> Phone Number*
+          <i className="fa fa-phone"></i> Phone Number*
         </label>
         <input
           type="number"
