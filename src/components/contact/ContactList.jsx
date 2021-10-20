@@ -22,7 +22,7 @@ export const ContactList = ({ list = [], onContactItemHandler }) => {
                   />
                 </div>
                 <div class="col-6 contact-detail"  onClick={(e)=> onContactItemHandler(e, contact)}>
-                  <span>{contact.name || "Unknown"} </span>
+                  <span>{contact?.firstName ?`${contact?.firstName} ${contact?.lastName}`: "Unknown"} </span>
                   <br />
                   <span>{contact.phoneNumber}</span>
                   <br />
