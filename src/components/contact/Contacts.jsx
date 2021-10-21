@@ -13,7 +13,8 @@ export const Contact = () => {
   const [search, setSearch] = useState("");
   const [loading, setLoading] = useState(false);
   const [isAddContact, setIsAddContact] = useState(false);
-  const [isChat, setisChat] = useState(false);
+  const [isChat, setisChat] = useState(true);
+  const [activeChat, setActiveChat] = useState({});
 
   const { contacts, contactLoading, contactErr } = useSelector((state) => ({
     contacts: state.contect.contacts,
@@ -30,6 +31,7 @@ export const Contact = () => {
     setContactList(contacts);
     setLoading(contactLoading);
     setError(contactErr);
+    setActiveChat(contacts?.[0])
   }, [contacts, contactLoading, contactErr]);
 
   const onChangeHandler = (e) => {
@@ -37,22 +39,31 @@ export const Contact = () => {
     setSearch(value);
   };
 
-  const onAddContactHandler = () => {};
+  const onAddContactHandler = () => {
+    setIsAddContact(true);
+    setisChat(false);
+  };
   const onContactItemHandler = (e, item) => {
+    setActiveChat(item)
+    setIsAddContact(false);
     setisChat(true);
-
   };
 
-  let filteredContact = search?.length ?
-    contactList?.filter((conct) =>
-      conct?.firstName?.toLowerCase().includes(search?.toLowerCase())
-    ) : contactList;
+  let filteredContact = search?.length
+    ? contactList?.filter((conct) =>
+        conct?.firstName?.toLowerCase().includes(search?.toLowerCase())
+      )
+    : contactList;
 
   const listProps = {
     list: filteredContact,
     onContactItemHandler,
   };
-  console.log(contactList, "contactList", filteredContact, 'search',search);
+  const chatProps = {
+item: activeChat,
+
+  }
+  console.log( "contactList", filteredContact, "search", activeChat);
 
   if (loading) {
     return <div>Loading......</div>;
@@ -73,15 +84,22 @@ export const Contact = () => {
             />
             <button
               type="button"
-              onClick={() => setIsAddContact(!isAddContact)}
-            >
+              onClick={onAddContactHandler}>
               +
             </button>
           </div>
           <ContactList {...listProps} />
         </div>
-        <div className="col-9 chat-sec">{isAddContact && <AddContact />}</div>
-        <div className="col-9 chat-sec">{isChat && <Chat />}</div>
+        {isAddContact && (
+          <div className="col-9 chat-sec">
+            <AddContact />
+          </div>
+        )}
+        {isChat && (
+          <div className="col-9 chat-sec">
+            <Chat {...chatProps} />
+          </div>
+        )}
       </div>
     </div>
   );
