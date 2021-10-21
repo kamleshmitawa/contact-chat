@@ -3,9 +3,8 @@ import { useDispatch, useSelector } from "react-redux";
 import { getContact } from "../../store/actions/contact";
 import { AddContact } from "./AddContact";
 import { ContactList } from "./ContactList";
-
-import "./contact.css";
 import { Chat } from "../message/Chat";
+import "./contact.css";
 
 export const Contact = () => {
   const [contactList, setContactList] = useState([]);
@@ -37,8 +36,7 @@ export const Contact = () => {
   }, [contacts, contactLoading, contactErr]);
 
   const onChangeHandler = (e) => {
-    const { name, value } = e.target;
-    setSearch(value);
+    setSearch(e.target.value);
   };
 
   const onAddContactHandler = () => {
@@ -64,7 +62,6 @@ export const Contact = () => {
   const chatProps = {
     item: activeChat,
   };
-  console.log("contactList", filteredContact, "search", activeChat);
 
   if (loading) {
     return <div>Loading......</div>;

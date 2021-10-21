@@ -1,8 +1,6 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 
 export const ContactList = ({ list = [], onContactItemHandler }) => {
-  console.log(list, "listlistlistlist");
-
   return (
     <div class="row contact-list">
       <div class="col-12 contact-sec">

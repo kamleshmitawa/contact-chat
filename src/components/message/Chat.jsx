@@ -18,18 +18,16 @@ export const Chat = ({ item }) => {
     })
   );
   const dispatch = useDispatch();
-
   const dummy = useRef();
   // we will use this to scroll to bottom of chat on page-reload and after sending a message
-  console.log(messages, "messagesmessagesmessages", item);
-
+  
   useEffect(() => {
-    console.log(item, "itemitemitem");
     if (item?.channelId) {
       getMessages(dispatch, item);
     } else {
       setMessageList([]);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [item]);
 
   useEffect(() => {
@@ -38,7 +36,7 @@ export const Chat = ({ item }) => {
 
   const scrollToBottom = () => {
     console.log(dummy, "kmkmkmkmdummy");
-    dummy.current.scrollIntoView({ behavior: "smooth" });
+    dummy?.current?.scrollIntoView({ behavior: "smooth" });
   };
 
   const sendMessage = async (e) => {
@@ -81,10 +79,11 @@ export const Chat = ({ item }) => {
       <div className="chat-container">
         {/* we will loop over the message and return a
         ChatMessage component for each message */}
-        {messageList.length ?
-          messageList?.map((msg) => <ChatMessage key={msg.id} message={msg} />) 
-        : <div className="no-msg">Let's start chat </div>
-        }
+        {messageList.length ? (
+          messageList?.map((msg) => <ChatMessage key={msg.id} message={msg} />)
+        ) : (
+          <div className="no-msg">Let's start chat </div>
+        )}
         <span ref={dummy} />
       </div>
       {/* Form to type and submit messages */}

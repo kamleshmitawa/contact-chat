@@ -7,7 +7,6 @@ export const addMessage = async (dispatch, data) => {
   try {
     dispatch({ type: MESSAGE_LOADING, payload: true });
     // Add a new message in collection "messages"
-    console.log(data, 'datadatadatadata')
     await addDoc(collection(db, "messages"), { id: uuidv4(), ...data });
     // await addDoc(collection(db, "contacts"), { id: uuidv4(), ...data }); //need to update channelId in contacts
     dispatch({ type: MESSAGE_LOADING, payload: false });
