@@ -16,11 +16,13 @@ export const Contact = () => {
   const [isChat, setisChat] = useState(true);
   const [activeChat, setActiveChat] = useState({});
 
-  const { contacts, contactLoading, contactErr } = useSelector((state) => ({
-    contacts: state.contect.contacts,
-    contactLoading: state.contect.contactLoading,
-    contactErr: state.contect.contactErr,
-  }));
+  const { contacts, contactLoading, contactErr } = useSelector(
+    ({ contect }) => ({
+      contacts: contect.contacts,
+      contactLoading: contect.contactLoading,
+      contactErr: contect.contactErr,
+    })
+  );
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -31,7 +33,7 @@ export const Contact = () => {
     setContactList(contacts);
     setLoading(contactLoading);
     setError(contactErr);
-    setActiveChat(contacts?.[0])
+    setActiveChat(contacts?.[0]);
   }, [contacts, contactLoading, contactErr]);
 
   const onChangeHandler = (e) => {
@@ -44,7 +46,7 @@ export const Contact = () => {
     setisChat(false);
   };
   const onContactItemHandler = (e, item) => {
-    setActiveChat(item)
+    setActiveChat(item);
     setIsAddContact(false);
     setisChat(true);
   };
@@ -60,10 +62,9 @@ export const Contact = () => {
     onContactItemHandler,
   };
   const chatProps = {
-item: activeChat,
-
-  }
-  console.log( "contactList", filteredContact, "search", activeChat);
+    item: activeChat,
+  };
+  console.log("contactList", filteredContact, "search", activeChat);
 
   if (loading) {
     return <div>Loading......</div>;
@@ -82,9 +83,7 @@ item: activeChat,
               value={search}
               onChange={onChangeHandler}
             />
-            <button
-              type="button"
-              onClick={onAddContactHandler}>
+            <button type="button" onClick={onAddContactHandler}>
               +
             </button>
           </div>

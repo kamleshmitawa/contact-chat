@@ -1,19 +1,19 @@
 import { collection, onSnapshot } from "@firebase/firestore";
 import { call, put, takeLatest,takeEvery } from "redux-saga/effects";
-import firebaseDB from "../../firebase";
+import {db} from "../../firebase";
 import { FETCH_CONTACT_LIST, SAVE_CONTACT_LIST } from "../types";
 
 function* fetchContacts(action) {
   try {
     let contacts = [];
-   onSnapshot(collection(firebaseDB, "contacts"), (snapshot) => {
+   onSnapshot(collection({db}, "contacts"), (snapshot) => {
         snapshot.docs.forEach((doc) => {
           contacts.push(doc.data());
         });
       })
 
     // const res = yield call(() =>
-    //   onSnapshot(collection(firebaseDB, "contacts"), (snapshot) => {
+    //   onSnapshot(collection({db}, "contacts"), (snapshot) => {
     //     snapshot.docs.forEach((doc) => {
     //       contacts.push(doc.data());
     //     });

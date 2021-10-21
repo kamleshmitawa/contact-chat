@@ -35,13 +35,6 @@ export const AddContact = () => {
   };
 
   const { profileImg, firstName, lastName, email, phoneNumber } = addPayload;
-  console.log(
-    addPayload,
-    "addPayloadaddPayload",
-    firstName,
-    "validObj",
-    validObj
-  );
 
   return (
     <div className="add-container">

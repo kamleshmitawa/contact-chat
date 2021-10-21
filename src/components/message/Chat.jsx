@@ -1,134 +1,92 @@
 import React, { useEffect, useRef, useState } from "react";
-import { ChatMessage } from "./ChatMessage";
-import { app } from "../../firebase";
-import firebaseDB from "../../firebase";
-// import firebase from 'firebase/app';
 import "firebase/firestore";
 import "firebase/auth";
-import { collection, onSnapshot } from "@firebase/firestore";
-
-import { useAuthState } from "react-firebase-hooks/auth";
-import { useCollectionData } from "react-firebase-hooks/firestore";
+import { v4 as uuidv4 } from "uuid";
+import { useDispatch, useSelector } from "react-redux";
+import { addMessage, getMessages } from "../../store/actions/message";
+import { ChatMessage } from "./ChatMessage";
 
 export const Chat = ({ item }) => {
   const [textInput, settextInput] = useState("");
-  // we will use this to scroll to bottom of chat on page-reload and after sending a message
+  const [messageList, setMessageList] = useState([]);
+
+  const { messages, messageLoading, messageErr } = useSelector(
+    ({ message }) => ({
+      messages: message.messages,
+      messageLoading: message.messageLoading,
+      messageErr: message.messageErr,
+    })
+  );
+  const dispatch = useDispatch();
+
   const dummy = useRef();
+  // we will use this to scroll to bottom of chat on page-reload and after sending a message
+  console.log(messages, "messagesmessagesmessages", item);
 
   useEffect(() => {
-    onSnapshot(collection(firebaseDB, "messages"), (snapshot) => {
-      console.log(snapshot, "snapshotsnapshotsnapshot", item);
-      let contacts = [];
-      snapshot.docs.forEach((doc) => {
-        console.log(doc, "docdocdoc");
-        contacts.push(doc.data());
-      });
-    });
-  }, []);
+    console.log(item, "itemitemitem");
+    if (item?.channelId) {
+      getMessages(dispatch, item);
+    } else {
+      setMessageList([]);
+    }
+  }, [item]);
+
+  useEffect(() => {
+    setMessageList(messages);
+  }, [messages]);
 
   const scrollToBottom = () => {
+    console.log(dummy, "kmkmkmkmdummy");
     dummy.current.scrollIntoView({ behavior: "smooth" });
   };
+
   const sendMessage = async (e) => {
     e.preventDefault();
-    // gets name, userID and pfp of logged in user
-    // const { displayName, uid, photoURL } = app.auth().currentUser;
+    let data = {
+      createdAt: new Date(),
+      profileImg:
+        "https://images.unsplash.com/photo-1498598457418-36ef20772bb9?ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&ixlib=rb-1.2.1&auto=format&fit=crop&w=870&q=80",
+      channelld: item?.channelId || uuidv4(),
+      contactId: item?.id || null,
+      sentBy: "kamlesh",
+      sendTo: item?.firstName || "test",
+      text: textInput,
+      type: "text",
+    };
+    addMessage(dispatch, data);
 
-    // await messagesRef.add({
-    //   user: displayName,
-    //   body: textInput,
-    //   createdAt: firebaseDB.firestore.FieldValue.serverTimestamp(),
-    //   uid: uid,
-    //   photoURL: photoURL,
-    // });
-
-    // // resetting form value and scrolling to bottom
-    // settextInput("");
-    // dummy.current.scrollIntoView({ behavior: "smooth" });
+    // resetting form value and scrolling to bottom
+    settextInput("");
+    scrollToBottom();
   };
 
   // getting the message and sorting them by time of creation
-  // const messagesRef =  onSnapshot(collection(firebaseDB, "messages"))
-
-  // const messagesRef = firebaseDB.collection("messages");
+  // const messagesRef = {db}.collection("messages");
   // const query = messagesRef.orderBy("createdAt", "asc").limitToLast(25);
 
   // const [messages] = useCollectionData(query, { idField: "id" });
-  const messages = [
-    {
-      id: 101,
-      channelld: 1,
-      contactId: "101",
-      createdAt: "October 20, 2021 at 12:00:00 AM UTC+5:30",
-      sentBy: "kamlesh",
-      text: "text message",
-      type: "text",
-    },
-    {
-      id: 101,
-      channelld: 1,
-      contactId: "101",
-      createdAt: "October 20, 2021 at 12:00:00 AM UTC+5:30",
-      sentBy: "kamleasdadsh",
-      text: "text message",
-      type: "text",
-    },
-    {
-      id: 101,
-      channelld: 1,
-      contactId: "101",
-      createdAt: "October 20, 2021 at 12:00:00 AM UTC+5:30",
-      sentBy: "kamleasdadsh",
-      text: "text message",
-      type: "text",
-    },
-    {
-      id: 101,
-      channelld: 1,
-      contactId: "101",
-      createdAt: "October 20, 2021 at 12:00:00 AM UTC+5:30",
-      sentBy: "kamlesh",
-      text: "text message",
-      type: "text",
-    },
-    {
-      id: 101,
-      channelld: 1,
-      contactId: "101",
-      createdAt: "October 20, 2021 at 12:00:00 AM UTC+5:30",
-      sentBy: "kamleasdadsh",
-      text: "text message",
-      type: "text",
-    },
-    {
-      id: 101,
-      channelld: 1,
-      contactId: "101",
-      createdAt: "October 20, 2021 at 12:00:00 AM UTC+5:30",
-      sentBy: "kamlesh",
-      text: "text message",
-      type: "text",
-    },
-    {
-      id: 101,
-      channelld: 1,
-      contactId: "101",
-      createdAt: "October 20, 2021 at 12:00:00 AM UTC+5:30",
-      sentBy: "kamleasdadsh",
-      text: "text message",
-      type: "text",
-    },
-  ];
 
+  if (messageLoading) {
+    return <div>Loading......</div>;
+  }
   return (
     <div className="chat-section">
-      <div className="chat-header" > {item?.firstName} </div>
-      <div className="chat-box">
+      {messageErr ? (
+        <div className="error-msg">{messageErr} </div>
+      ) : (
+        <React.Fragment />
+      )}
+      <div className="chat-header"> {item?.firstName} </div>
+      <div className="chat-container">
         {/* we will loop over the message and return a
         ChatMessage component for each message */}
-        {messages &&
-          messages?.map((msg) => <ChatMessage key={msg.id} message={msg} />)}
-          </div>
+        {messageList.length ?
+          messageList?.map((msg) => <ChatMessage key={msg.id} message={msg} />) 
+        : <div className="no-msg">Let's start chat </div>
+        }
+        <span ref={dummy} />
+      </div>
       {/* Form to type and submit messages */}
       <div className="text-section">
         <form onSubmit={sendMessage}>
